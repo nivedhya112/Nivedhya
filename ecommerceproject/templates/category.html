@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+    {% if category %}
+        {{ category.description|truncatewords:155 }}
+    {% else %}
+        Welcome to META store where you can buy different items...
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {% if category %}
+        {{ category.name }} -- META store
+    {% else %}
+        See our new collections -- META store
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if category %}
+            <div class="row my-row-class">
+                <div class="mx-auto">
+                    <p><a href="{% url 'shop:allProdCat' %}">Our product collections</a></p>
+                </div>
+            </div>
+            <div class="mx-auto">
+                <img class="my-image" src="{{ category.image.url }}" alt="{{ category.name }}">
+            </div>
+            <br>
+            <div>
+                <h1 class="text-center my-title">{{ category.name }}</h1>
+                <p class="text-justify">{{ category.description }}</p>
+            </div>
+        {% else %}
+            <div>
+                <img class="my-image my-image-padding" src="{% static 'img/banner.png' %}" alt="Our products" width="1250" height="400">
+            </div>
+            <br>
+            <div>
+                <h1 class="text-center my-title">Our product collections</h1>
+                <p class="text-justify">
+                    It is an established fact that a reader will be distracted by the readable content of a page when
+                    looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                    of letters, as opposed to using 'Content here, content here,' making it look like readable English. Many
+                    desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a
+                    search for 'Lorem Ipsum' will uncover many websites still in their infancy. Various versions have
+                    evolved over the years, sometimes by accident, sometimes on purpose (injected humor and the like).
+                </p>
+            </div>
+        {% endif %}
+        <div class="container">
+            <div class="row mx-auto">
+                {% for product in products.object_list %}
+                <div class="my_bottom_margin col-9 col-sm-12 col-md-4 col-lg-4">
+                    <div class="card text-center" style="width: 18rem;">
+                        <a href="{{ product.get_url }}">
+    {% if product.image %}
+        <img class="card-img-top my_image" src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 200px;">
+    {% else %}
+        <!-- Provide a placeholder image or message when 'image' is not available -->
+        <img class="card-img-top my_image" src="{% static 'img/placeholder.png' %}" alt="Placeholder" style="width: 100%; height: 200px;">
+    {% endif %}
+</a>
+
+                        <div class="card-body">
+                            <h4>{{ product.name }}</h4>
+                            <p>{{ product.price }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mx-auto">
+                {% if products.paginator.num_pages > 1 %}
+                    <hr>
+                    <div class="text-center">
+                        {% for pg in products.paginator.page_range %}
+                            <a href="?page={{ pg }}" class="btn btn-light btn-sm" {% if products.number == pg %} active {% endif %}>{{ pg }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
